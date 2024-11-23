@@ -1,16 +1,28 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Mujeres Virtuosas</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" href="#">Inicio</a>
-          <a class="nav-link" href="#">Pestañas</a>
-          <a class="nav-link" href="#">Uñas</a>
-          <a class="nav-link" href="#">Depilación</a>
+    <div class="container-fluid d-flex align-items-center">
+        <!-- Logo o Título del Navbar -->
+        <a class="navbar-brand" href="#">Mujeres Virtuosas</a>
+        <!-- Botón Responsive -->
+        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Opciones del Navbar -->
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mx-auto gap-3">
+                <a class="nav-link poiret-one-regular active" aria-current="page" href="#">Inicio</a>
+                <a class="nav-link poiret-one-regular" href="#">Pestañas</a>
+                <a class="nav-link poiret-one-regular" href="#">Uñas</a>
+                <a class="nav-link poiret-one-regular" href="#">Depilación</a>
+            </div>
         </div>
-      </div>
+        <!-- Carrito de Compras -->
+        <div class="carrito-container d-flex align-items-center">
+            <a href="#" class="btn btn-outline-dark position-relative">
+                <i class="bi bi-cart"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    3
+                </span>
+            </a>
+        </div>
     </div>
-  </nav>
+</nav>
