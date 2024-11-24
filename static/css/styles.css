@@ -4,6 +4,7 @@
   font-style: normal;
 }
 
-.carrito-container {
-  margin-left: 9rem; /* Ajusta este valor para cambiar la separación */
+.tangerine-regular {
+  font-family: "Tangerine", cursive;
+  font-size: 60px;
 }
