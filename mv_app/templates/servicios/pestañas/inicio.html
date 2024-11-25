@@ -61,16 +61,16 @@
     /* Contenedor de las secciones (scroll horizontal) */
     .sections-container {
         display: flex;
-        flex-wrap: nowrap;
-        overflow-x: hidden; /* Oculta el scroll */
-        scroll-snap-type: x mandatory; /* Snap horizontal */
+        flex-wrap: nowrap; /* Impide que las secciones salten a otra fila */
+        overflow-x: hidden; /* Oculta el scroll horizontal */
+        scroll-snap-type: x mandatory; /* Snap horizontal obligatorio */
     }
 
     section {
-        flex: 0 0 100%; /* Cada sección ocupa el 100% del ancho */
+        flex: 0 0 100%; /* Cada sección ocupa el 100% del ancho del contenedor */
         min-height: 100vh;
         scroll-snap-align: start; /* Alinea las secciones al inicio */
-        padding: 100px 20px;
+        padding: 20px;
     }
 
     #profesionales {
@@ -81,45 +81,51 @@
         background-color: #fceae4;
     }
 
-    .service-card {
+    .content-container {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las tarjetas se ajusten */
+        gap: 20px;
+        justify-content: center; /* Centra las tarjetas horizontalmente */
+    }
+
+    .content-card {
         background: #fff;
         border: 1px solid #ddd;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        max-width: 400px;
+        width: calc(33.33% - 20px); /* Tres tarjetas por fila */
         padding: 20px;
         text-align: center;
     }
 
-    .service-card h5 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    .service-card img {
+    .content-card img {
         width: 100%;
+        height: auto;
         border-radius: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
-    /* Media Query para pantallas grandes */
-    @media (min-width: 1200px) {
-        .profile-header {
-            height: 60vh;
-        }
+    .content-card h5 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #000;
+    }
+
+    .content-card p {
+        font-size: 0.9rem;
+        color: #555;
     }
 
     /* Media Query para pantallas pequeñas */
-    @media (max-width: 576px) {
-        .profile-header {
-            height: 40vh;
+    @media (max-width: 768px) {
+        .content-card {
+            width: calc(50% - 20px); /* Dos tarjetas por fila */
         }
+    }
 
-        .back-button {
-            font-size: 14px;
-            top: 5px;
-            left: 5px;
+    @media (max-width: 576px) {
+        .content-card {
+            width: 100%; /* Una tarjeta por fila */
         }
     }
 </style>
@@ -147,53 +153,28 @@
     <section id="profesionales">
         <h2>Profesionales</h2>
         <p>Encuentra a los mejores profesionales especializados en el cuidado y belleza.</p>
-        <div class=" carousel-inner">
-            <div class="service-card carousel-item active">
-              <img src="{% static 'img/l1.jpg' %}" class="d-block w-100" alt="...">
-              <div class="carousel-caption d-none d-md-block">
-                <h5>Primer Slide</h5>
-                <p>Descripción del primer slide.</p>
-              </div>
-        <div class="service-card">
-            <img src="{% static 'img/l2.jpg' %}" alt="Servicio 2">
-            <h5>Coloración</h5>
-            <p>Explora colores vibrantes o tonos clásicos con expertos.</p>
-        </div>
-        <div class="service-card">
-            <img src="{% static 'img/l3.jpg' %}" alt="Servicio 3">
-            <h5>Manicure y Pedicure</h5>
-            <p>Relájate con un cuidado completo de uñas y piel.</p>
+        <div class="content-container">
+            <div class="content-card">
+                <img src="{% static 'img/l1.jpg' %}" alt="Profesional 1">
+                <h5>Estilista 1</h5>
+                <p>Descripción del profesional.</p>
+            </div>
+            <div class="content-card">
+                <img src="{% static 'img/l2.jpg' %}" alt="Profesional 2">
+                <h5>Estilista 2</h5>
+                <p>Descripción del profesional.</p>
+            </div>
+            <div class="content-card">
+                <img src="{% static 'img/l3.jpg' %}" alt="Profesional 3">
+                <h5>Estilista 3</h5>
+                <p>Descripción del profesional.</p>
+            </div>
         </div>
     </section>
 
- <!-- Controles -->
- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Anterior</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Siguiente</span>
-  </button>
-
     <!-- Sección Servicios -->
     <section id="servicios">
-        <h2>Servicios</h2>
-        <div class="service-card">
-            <img src="{% static 'img/l1.jpg' %}" alt="Servicio 1">
-            <h5>Corte de cabello</h5>
-            <p>Un corte profesional adaptado a tu estilo.</p>
-        </div>
-        <div class="service-card">
-            <img src="{% static 'img/l2.jpg' %}" alt="Servicio 2">
-            <h5>Coloración</h5>
-            <p>Explora colores vibrantes o tonos clásicos con expertos.</p>
-        </div>
-        <div class="service-card">
-            <img src="{% static 'img/l3.jpg' %}" alt="Servicio 3">
-            <h5>Manicure y Pedicure</h5>
-            <p>Relájate con un cuidado completo de uñas y piel.</p>
-        </div>
+        {% include 'servicios/pestañas/agendamiento.html' %}
     </section>
 </div>
 
