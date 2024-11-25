@@ -1,5 +1,227 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-pestañas
+<style>
+    /* Configuración General */
+    body {
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden; /* Evita el scroll horizontal no deseado */
+    }
+
+    .profile-header {
+        position: relative;
+        height: 50vh; /* Altura relativa al viewport */
+        background-image: url("{% static 'img/inicio.png' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        color: #000;
+        padding-bottom: 20px;
+    }
+
+    .back-button {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        font-size: 16px;
+        color: #000;
+        text-decoration: none;
+    }
+
+    .profile-header h4 {
+        font-size: clamp(24px, 5vw, 72px); /* Ajusta entre 24px y 72px según el ancho del viewport */
+        color: #000;
+        text-decoration: none;
+    }
+
+    .tab-menu {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .tab-menu a {
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+        border-bottom: 3px solid transparent;
+    }
+
+    .tab-menu a.active {
+        border-color: #6c757d;
+    }
+
+    /* Contenedor de las secciones (scroll horizontal) */
+    .sections-container {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: hidden; /* Oculta el scroll */
+        scroll-snap-type: x mandatory; /* Snap horizontal */
+    }
+
+    section {
+        flex: 0 0 100%; /* Cada sección ocupa el 100% del ancho */
+        min-height: 100vh;
+        scroll-snap-align: start; /* Alinea las secciones al inicio */
+        padding: 100px 20px;
+    }
+
+    #profesionales {
+        background-color: #eaf4fc;
+    }
+
+    #servicios {
+        background-color: #fceae4;
+    }
+
+    .service-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        max-width: 400px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .service-card h5 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .service-card img {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* Media Query para pantallas grandes */
+    @media (min-width: 1200px) {
+        .profile-header {
+            height: 60vh;
+        }
+    }
+
+    /* Media Query para pantallas pequeñas */
+    @media (max-width: 576px) {
+        .profile-header {
+            height: 40vh;
+        }
+
+        .back-button {
+            font-size: 14px;
+            top: 5px;
+            left: 5px;
+        }
+    }
+</style>
+
+<!-- Profile Section -->
+<div class="profile-header">
+    <!-- Back Button -->
+    <a href="/" class="back-button">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+
+    <!-- Profile Info -->
+    <h4 class="pestañas">Pestañas</h4>
+</div>
+
+<!-- Tab Menu -->
+<div class="tab-menu mt-4">
+    <a href="#profesionales" class="active">Profesionales</a>
+    <a href="#servicios">Servicios</a>
+</div>
+
+<!-- Contenedor Horizontal -->
+<div class="sections-container">
+    <!-- Sección Profesionales -->
+    <section id="profesionales">
+        <h2>Profesionales</h2>
+        <p>Encuentra a los mejores profesionales especializados en el cuidado y belleza.</p>
+        <div class=" carousel-inner">
+            <div class="service-card carousel-item active">
+              <img src="{% static 'img/l1.jpg' %}" class="d-block w-100" alt="...">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Primer Slide</h5>
+                <p>Descripción del primer slide.</p>
+              </div>
+        <div class="service-card">
+            <img src="{% static 'img/l2.jpg' %}" alt="Servicio 2">
+            <h5>Coloración</h5>
+            <p>Explora colores vibrantes o tonos clásicos con expertos.</p>
+        </div>
+        <div class="service-card">
+            <img src="{% static 'img/l3.jpg' %}" alt="Servicio 3">
+            <h5>Manicure y Pedicure</h5>
+            <p>Relájate con un cuidado completo de uñas y piel.</p>
+        </div>
+    </section>
+
+ <!-- Controles -->
+ <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
+
+    <!-- Sección Servicios -->
+    <section id="servicios">
+        <h2>Servicios</h2>
+        <div class="service-card">
+            <img src="{% static 'img/l1.jpg' %}" alt="Servicio 1">
+            <h5>Corte de cabello</h5>
+            <p>Un corte profesional adaptado a tu estilo.</p>
+        </div>
+        <div class="service-card">
+            <img src="{% static 'img/l2.jpg' %}" alt="Servicio 2">
+            <h5>Coloración</h5>
+            <p>Explora colores vibrantes o tonos clásicos con expertos.</p>
+        </div>
+        <div class="service-card">
+            <img src="{% static 'img/l3.jpg' %}" alt="Servicio 3">
+            <h5>Manicure y Pedicure</h5>
+            <p>Relájate con un cuidado completo de uñas y piel.</p>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const links = document.querySelectorAll('.tab-menu a');
+        const sectionsContainer = document.querySelector('.sections-container');
+
+        links.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault(); // Evita el comportamiento por defecto del enlace
+                const targetId = this.getAttribute('href').slice(1); // Obtén el ID del destino
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    // Calcula el desplazamiento horizontal
+                    const offset = targetSection.offsetLeft;
+                    sectionsContainer.scrollTo({
+                        left: offset,
+                        behavior: 'smooth' // Desplazamiento suave
+                    });
+
+                    // Actualiza la clase activa
+                    links.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
