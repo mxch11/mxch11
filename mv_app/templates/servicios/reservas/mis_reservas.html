@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Mujeres Virtuosas - {% block title %} {% endblock title %}</title>
+    <title> Mujeres Virtuosas - Reservas</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
     <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
@@ -21,7 +21,8 @@
 </head>
 
 <body>
-    {% include 'navbar.html' %}
+
+    {% include "navbar.html" %}
 
     <!-- Profile Section -->
     <div class="profile-header">
@@ -34,7 +35,7 @@
         <h4 class="pestañas"> mis reservas</h4>
     </div>
     <div class="container mt-5">
-        <h1 class="mb-4">Mis Reservas</h1>
+        <h1 class="mb-4">Mis Reservas - {{ user.first_name|default:user.username }}</h1>
         <!-- Mostrar mensajes de alerta -->
         {% if messages %}
         <div class="mb-3">
@@ -87,6 +88,6 @@
         <a href="/" class="btn btn-primary mt-3">Volver al inicio</a>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
