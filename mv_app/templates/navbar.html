@@ -1,84 +1,62 @@
-<style>
-    .carrito-container {
-        margin-left: auto; /* Empuja el carrito a la derecha en pantallas grandes */
-    }
-</style>
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid d-flex align-items-center">
-            <!-- Logo o Título del Navbar -->
-            <a class="navbar-brand" href="/">Mujeres Virtuosas</a>
-            <!-- Botón Responsive y Carrito en Pantallas Pequeñas -->
-            <div class="d-flex d-lg-none align-items-center">
-                <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a href="#" class="btn btn-outline-dark position-relative">
-                    <i class="bi bi-cart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
-                    </span>
-                </a>
-            </div>
-            <!-- Opciones del Navbar -->
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav mx-auto gap-3">
-                    <a class="nav-link poiret-one-regular active" aria-current="page" href="/">Inicio</a>
-                    <a class="nav-link poiret-one-regular" href="/p_inicio">Pestañas</a>
-                    <a class="nav-link poiret-one-regular" href="/u_inicio">Uñas</a>
-                    <a class="nav-link poiret-one-regular" href="/d_inicio">Depilación</a>
-                </div>
-            </div>
-            
-             <!-- Carrito de Compras Visible Solo en Pantallas Grandes -->
-             <div class="carrito-container d-none d-lg-flex">
-                <a href="#" class="btn btn-outline-dark position-relative">
-                    <i class="bi bi-cart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
-                    </span>
-                </a>
-            </div>
-        </div>
-    </nav>
     <div class="container-fluid d-flex align-items-center">
         <!-- Logo o Título del Navbar -->
-        <span class="h1 mb-0 tangerine-regular">Mujeres Virtuosas</span>
-        <!-- Botón Responsive -->
-        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="navbar-brand" href="/">Mujeres Virtuosas</a>
+        <!-- Botón Responsive y Carrito en Pantallas Pequeñas -->
+        <div class="d-flex d-lg-none align-items-center">
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a href="#" class="btn btn-outline-dark position-relative">
+                <i class="bi bi-cart"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    3
+                </span>
+            </a>
+        </div>
         <!-- Opciones del Navbar -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav mx-auto gap-3">
-                <a class="nav-link poiret-one-regular active" aria-current="page" href="#">Inicio</a>
-                <a class="nav-link poiret-one-regular" href="#">Pestañas</a>
-                <a class="nav-link poiret-one-regular" href="#">Uñas</a>
-                <a class="nav-link poiret-one-regular" href="#">Depilación</a>
+                {% if user.is_authenticated %}
+
+                <a class="nav-link  fw-bold poiret-one-regular {% if request.path == '/' %}active aria-current="page"{% endif %}" href="/">Inicio</a>
+                <a class="nav-link  fw-bold poiret-one-regular {% if request.path == '/p_inicio/' %}active aria-current="page"{% endif %}" href="/p_inicio">Pestañas</a>
+                <a class="nav-link  fw-bold poiret-one-regular {% if request.path == '/u_inicio/' %}active aria-current="page"{% endif %}" href="/u_inicio">Uñas</a>
+                <a class="nav-link  fw-bold poiret-one-regular {% if request.path == '/d_inicio/' %}active aria-current="page"{% endif %}" href="/d_inicio">Depilación</a>
+                {% endif %}
             </div>
         </div>
-        
-        <div class="d-flex align-items-center gap-1">
-            <!-- Ícono de Usuario -->
-            <div class = "dropdown">
-                <button class="btn btn-outline-dark position-relative dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person"></i>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Opción 1</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
+        <div class="d-flex ms-auto align-items-center gap-3">
+            <!-- usuarios -->
+            <div class="dropdown">
+                <button class="btn btn-outline-dark position-relative dropdown-toggle" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end ">
+                
+                <li>
+                    {% if user.is_authenticated %}
+                        <p class = "dropdown-item">Hola, {{ user.first_name|default:user.username }}</p>
+                        <a href="{% url 'mis_reservas' %}" class="dropdown-item">Mis Reservas</a>
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
                             <button class="dropdown-item" type="submit">Cerrar Sesión</button>
                         </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="dropdown-item">Iniciar Sesión</a>
+                        <a href="{% url 'register' %}" class="dropdown-item">Registrarse</a>
+                    {% endif %}
+                        
                     </li>
                 </ul>
             </div>
-            
 
-            <!-- Carrito de Compras -->
-            <div class="mx-2">
+            <!-- Carrito de Compras Visible Solo en Pantallas Grandes -->
+            {% if user.is_authenticated %}
+            <div class="carrito-container d-none d-lg-flex">
                 <a href="#" class="btn btn-outline-dark position-relative">
                     <i class="bi bi-cart"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -86,6 +64,7 @@
                     </span>
                 </a>
             </div>
+            {% endif %}
         </div>
     </div>
 </nav>

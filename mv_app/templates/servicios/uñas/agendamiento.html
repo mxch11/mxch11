@@ -1,0 +1,469 @@
+{% load static %}
+<style>
+    .calendar-dates div.selectable:hover {
+        background: #f0f0f0;
+        cursor: pointer;
+    }
+    .calendar-dates div.selected {
+        background: #e57373;
+        color: #fff;
+        font-weight: bold;
+    }
+    
+    body {
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .tab-menu {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        z-index: 10;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-menu a {
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+        border-bottom: 3px solid transparent;
+        transition: border-color 0.3s;
+    }
+
+    .tab-menu a.active {
+        border-color: #6c757d;
+    }
+
+    .sections-container {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: hidden;
+        scroll-snap-type: x mandatory;
+        width: 100%;
+    }
+
+    section {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        min-height: 100vh;
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .service-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .calendar-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #666;
+    }
+
+    .calendar-nav {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        color: #666;
+    }
+
+    .calendar-days,
+    .calendar-dates {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+    }
+
+    .calendar-days div {
+        font-weight: bold;
+        color: #666;
+    }
+
+    .calendar-dates div {
+        padding: 10px;
+        border-radius: 5px;
+        background: #fff;
+        cursor: pointer;
+        color: #333;
+        box-sizing: border-box;
+    }
+
+    .calendar-dates div:hover {
+        background: #f0f0f0;
+    }
+
+    .calendar-dates .disabled {
+        color: #ccc;
+        pointer-events: none;
+    }
+
+    .calendar-dates .selected {
+        background: #e57373;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+        .calendar-container {
+            width: 100%;
+        }
+
+        section {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="tab-menu d-none">
+    <a href="#seguridad" class="active">Seguridad</a>
+    <a href="#efecto">Efecto</a>
+    <a href="#profesional">Profesional</a>
+    <a href="#calendario">Calendario</a>
+    <a href="#confirmar">Confirmar</a>
+</div>
+
+<div class="sections-container">
+    <!-- Pestaña 1: Seguridad -->
+    {% comment %} <section id="seguridad">
+        <div class="service-card">
+            <p>Si posee un lifting de pestañas con antigüedad de 1 mes o menos, no podrá realizarse el servicio de extensiones por su seguridad.</p>
+            <label>Toma de conocimiento</label>
+            <input type="checkbox" id="checkbox-seguridad" /> <br>
+            <button id="btn-continuar-seguridad" class="btn btn-warning mt-3" disabled>Continuar</button>
+        </div>
+    </section> {% endcomment %}
+
+    <!-- Pestaña 2: Efecto -->
+    <section id="efecto">
+        <div class="service-card">
+            <label for="efect">Efecto a realizar</label>
+            <select id="efect" class="form-control mt-2" required>
+                <option value="" disabled selected>----</option>
+                {% for servicio in servicios %}
+                <option value="{{ servicio.id }}">{{ servicio.nombre }} - ${{ servicio.precio }}</option>
+                {% endfor %}
+            </select>
+            <div class="mt-3">
+                
+                <button id="btn-continuar-efecto" class="btn btn-warning">Continuar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pestaña 3: Profesional -->
+    <section id="profesional">
+        <div class="service-card">
+            <label for="profesiona">Seleccione un Profesional</label>
+            <select id="profesiona" class="form-control mt-2" required>
+                <option value="" disabled selected>----</option>
+                {% for estilista in estilistas %}
+                <option value="{{ estilista.id }}">{{ estilista.nombre }}</option>
+                {% endfor %}
+            </select>
+            <div class="mt-3">
+                <button id="btn-retroceder-profesional" class="btn btn-secondary">Retroceder</button>
+                <button id="btn-continuar-profesional" class="btn btn-warning">Continuar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pestaña 4: Calendario -->
+    <section id="calendario">
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button class="calendar-nav prev">←</button>
+                <span class="calendar-month-year" id="calendar-month-year"></span>
+                <button class="calendar-nav next">→</button>
+            </div>
+            <div class="calendar-days">
+                <div>DOM</div>
+                <div>LUN</div>
+                <div>MAR</div>
+                <div>MIE</div>
+                <div>JUE</div>
+                <div>VIE</div>
+                <div>SAB</div>
+            </div>
+            <div class="calendar-dates" id="calendar-dates">
+                <!-- Las fechas se generan dinámicamente -->
+            </div>
+        </div>
+        <div class="mt-3">
+            <button id="btn-retroceder-calendario" class="btn btn-secondary">Retroceder</button>
+            <button id="btn-continuar-calendario" class="btn btn-warning">Continuar</button>
+        </div>
+    </section>
+
+    <!-- Pestaña 5: Confirmar -->
+    <section id="confirmar">
+        <div class="service-card">
+            <h5>Confirmación de Agendamiento</h5>
+            <p><strong>Servicio:</strong> <span id="confirmar-servicio">-</span></p>
+            <p><strong>Profesional:</strong> <span id="confirmar-profesional">-</span></p>
+            <p><strong>Fecha:</strong> <span id="confirmar-fecha">-</span></p>
+            <form id="form-reservar-hora" method="POST" action="{% url 'reservar_hora' %}">
+                {% csrf_token %}
+                <input type="hidden" name="servicio_id" id="input-servicio-id"required>
+                <input type="hidden" name="profesional_id" id="input-profesional-id"required>
+                <input type="hidden" name="fecha" id="input-fecha"required>
+                <button id="btn-retroceder-confirmar" class="btn btn-secondary">Retroceder</button>
+          
+                
+                <button type="submit" class="btn btn-success mt-3">Confirmar Agendamiento</button>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.querySelectorAll('.tab-menu a').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Función para mover a la siguiente o anterior pestaña
+    function irASeccion(seccion) {
+        const target = document.querySelector(seccion);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Seguridad
+    {% comment %} const checkboxSeguridad = document.getElementById('checkbox-seguridad');
+    const continuarSeguridad = document.getElementById('btn-continuar-seguridad');
+    checkboxSeguridad.addEventListener('change', () => {
+        continuarSeguridad.disabled = !checkboxSeguridad.checked;
+    });
+    continuarSeguridad.addEventListener('click', () => irASeccion('#efecto')); {% endcomment %}
+
+    // Efecto
+    document.getElementById('btn-continuar-efecto').addEventListener('click', () => irASeccion('#profesional'));
+    {% comment %} document.getElementById('btn-retroceder-efecto').addEventListener('click', () => irASeccion('#seguridad')); {% endcomment %}
+
+    // Profesional
+    document.getElementById('btn-continuar-profesional').addEventListener('click', () => irASeccion('#calendario'));
+    document.getElementById('btn-retroceder-profesional').addEventListener('click', () => irASeccion('#efecto'));
+
+    // Calendario
+    document.getElementById('btn-continuar-calendario').addEventListener('click', () => irASeccion('#confirmar'));
+    document.getElementById('btn-retroceder-calendario').addEventListener('click', () => irASeccion('#profesional'));
+
+    // Confirmar
+    document.getElementById('btn-retroceder-confirmar').addEventListener('click', () => irASeccion('#calendario'));
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const calendarMonthYear = document.getElementById('calendar-month-year');
+        const calendarDates = document.getElementById('calendar-dates');
+
+        // Fecha actual
+        let currentDate = new Date();
+
+        // Función para generar las fechas del calendario
+        function generateCalendar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            // Establecer el encabezado del mes y año
+            const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            calendarMonthYear.textContent = `${monthNames[month]} ${year}`;
+
+            // Obtener el primer día del mes y el número total de días
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Limpiar el contenedor de fechas
+            calendarDates.innerHTML = '';
+
+            // Agregar días del mes anterior como "disabled"
+            const prevDays = new Date(year, month, 0).getDate();
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = prevDays - i;
+                dayDiv.classList.add('disabled');
+                calendarDates.appendChild(dayDiv);
+            }
+
+            // Agregar días del mes actual
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = i;
+                dayDiv.classList.add('selectable');
+                dayDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+                    dayDiv.classList.add('selected');
+                });
+                calendarDates.appendChild(dayDiv);
+            }
+
+            // Agregar días del mes siguiente como "disabled"
+            const totalCells = firstDay + daysInMonth;
+            const nextDays = 7 - (totalCells % 7);
+            if (nextDays < 7) {
+                for (let i = 1; i <= nextDays; i++) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.textContent = i;
+                    dayDiv.classList.add('disabled');
+                    calendarDates.appendChild(dayDiv);
+                }
+            }
+        }
+
+        // Botones de navegación
+        document.querySelector('.prev').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar(currentDate);
+        });
+
+        document.querySelector('.next').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar(currentDate);
+        });
+
+        // Generar el calendario inicial
+        generateCalendar(currentDate);
+    });
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Variables para almacenar los datos seleccionados
+        let servicioSeleccionado = '';
+        let profesionalSeleccionado = '';
+        let fechaSeleccionada = '';
+        let servicioId = '';
+        let profesionalId = '';
+    
+        // Referencias a los campos de confirmación y formulario
+        const confirmarServicio = document.getElementById('confirmar-servicio');
+        const confirmarProfesional = document.getElementById('confirmar-profesional');
+        const confirmarFecha = document.getElementById('confirmar-fecha');
+    
+        const inputServicioId = document.getElementById('input-servicio-id');
+        const inputProfesionalId = document.getElementById('input-profesional-id');
+        const inputFecha = document.getElementById('input-fecha');
+    
+        // Manejar selección de servicio
+        const servicioSelect = document.getElementById('efect');
+        const continuarEfecto = document.getElementById('btn-continuar-efecto');
+        servicioSelect.addEventListener('change', () => {
+            servicioId = servicioSelect.value;
+            servicioSeleccionado = servicioSelect.options[servicioSelect.selectedIndex].text;
+            console.log(`Servicio seleccionado: ${servicioSeleccionado} (ID: ${servicioId})`);
+    
+            // Habilitar el botón de continuar si hay selección
+            continuarEfecto.disabled = !servicioId;
+        });
+    
+        // Manejar selección de profesional
+        const profesionalSelect = document.getElementById('profesiona');
+        const continuarProfesional = document.getElementById('btn-continuar-profesional');
+        profesionalSelect.addEventListener('change', () => {
+            profesionalId = profesionalSelect.value;
+            profesionalSeleccionado = profesionalSelect.options[profesionalSelect.selectedIndex].text;
+            console.log(`Profesional seleccionado: ${profesionalSeleccionado} (ID: ${profesionalId})`);
+    
+            // Habilitar el botón de continuar si hay selección
+            continuarProfesional.disabled = !profesionalId;
+        });
+    
+        // Manejar selección de fecha desde el calendario
+        const continuarCalendario = document.getElementById('btn-continuar-calendario');
+        document.getElementById('calendar-dates').addEventListener('click', (event) => {
+            if (event.target.classList.contains('selectable')) {
+                // Obtener el día seleccionado
+                const day = event.target.textContent.trim();
+                const calendarMonthYear = document.getElementById('calendar-month-year').textContent.trim();
+                fechaSeleccionada = `${day} ${calendarMonthYear}`;
+                console.log(`Fecha seleccionada: ${fechaSeleccionada}`);
+    
+                // Habilitar el botón de continuar si hay selección
+                continuarCalendario.disabled = !fechaSeleccionada;
+            }
+        });
+    
+        // Al llegar a la pestaña "Confirmar", actualizar los datos y formulario
+        continuarCalendario.addEventListener('click', () => {
+            // Actualizar los valores de los campos ocultos del formulario
+            inputServicioId.value = servicioId;
+            inputProfesionalId.value = profesionalId;
+            inputFecha.value = fechaSeleccionada;
+    
+            // Mostrar los datos en la sección de Confirmación
+            confirmarServicio.textContent = servicioSeleccionado || 'No seleccionado';
+            confirmarProfesional.textContent = profesionalSeleccionado || 'No seleccionado';
+            confirmarFecha.textContent = fechaSeleccionada || 'No seleccionada';
+    
+            // Ir a la pestaña Confirmar
+            irASeccion('#confirmar');
+        });
+    
+        // Deshabilitar botones de avanzar por defecto
+        continuarEfecto.disabled = true;
+        continuarProfesional.disabled = true;
+        continuarCalendario.disabled = true;
+    
+        // Función para navegar entre secciones
+        function irASeccion(seccion) {
+            const target = document.querySelector(seccion);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    
+        // Navegación entre pestañas
+        document.getElementById('btn-retroceder-confirmar').addEventListener('click', () => irASeccion('#calendario'));
+        document.getElementById('btn-retroceder-calendario').addEventListener('click', () => irASeccion('#profesional'));
+        document.getElementById('btn-retroceder-profesional').addEventListener('click', () => irASeccion('#efecto'));
+        document.getElementById('btn-retroceder-efecto').addEventListener('click', () => irASeccion('#seguridad'));
+        document.getElementById('btn-continuar-seguridad').addEventListener('click', () => irASeccion('#efecto'));
+        document.getElementById('btn-continuar-efecto').addEventListener('click', () => irASeccion('#profesional'));
+        document.getElementById('btn-continuar-profesional').addEventListener('click', () => irASeccion('#calendario'));
+    });
+    
+</script>

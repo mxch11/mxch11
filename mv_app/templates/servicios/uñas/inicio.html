@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-
+{% block title %}Uñas{% endblock title %}
 {% block content %}
-uñas
+    {% block catServi %}Uñas{% endblock catServi %}
+    {% block agendamiento %}
+        {% include 'servicios/uñas/agendamiento.html' %} 
+    {% endblock agendamiento %}
+
 {% endblock %}

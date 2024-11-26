@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
-
+{% block title %}Depilacion{% endblock title %}
 {% block content %}
-depilacion
+    {% block catServi %}Depilacion{% endblock catServi %}
+    {% block agendamiento %}
+        {% include 'servicios/depilacion/agendamiento.html' %} 
+    {% endblock agendamiento %}
+
+
+
 {% endblock %}

@@ -6,5 +6,132 @@
 }
 
 .carrito-container {
-  margin-left: 9rem; /* Ajusta este valor para cambiar la separación */
+  margin-left: auto; /* Ajusta este valor para cambiar la separación */
 }
+body {
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Evita el scroll horizontal no deseado */
+}
+
+.profile-header {
+  position: relative;
+  height: 50vh; /* Altura relativa al viewport */
+  background-image: url("../img/inicio.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  color: #000;
+  padding-bottom: 20px;
+}
+
+.back-button {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  font-size: 16px;
+  color: #000;
+  text-decoration: none;
+}
+
+.profile-header h4 {
+  font-size: clamp(24px, 5vw, 72px); /* Ajusta entre 24px y 72px según el ancho del viewport */
+  color: #000;
+  text-decoration: none;
+}
+
+.tab-menu {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.tab-menu a {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-menu a.active {
+  border-color: #6c757d;
+}
+
+/* Contenedor de las secciones (scroll horizontal) */
+.sections-container {
+  display: flex;
+  flex-wrap: nowrap; /* Impide que las secciones salten a otra fila */
+  overflow-x: hidden; /* Oculta el scroll horizontal */
+  scroll-snap-type: x mandatory; /* Snap horizontal obligatorio */
+}
+
+section {
+  flex: 0 0 100%; /* Cada sección ocupa el 100% del ancho del contenedor */
+  min-height: 100vh;
+  scroll-snap-align: start; /* Alinea las secciones al inicio */
+  padding: 20px;
+}
+
+#profesionales {
+  background-color: #eaf4fc;
+}
+
+#servicios {
+  background-color: #fceae4;
+}
+
+.content-container {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las tarjetas se ajusten */
+  gap: 20px;
+  justify-content: center; /* Centra las tarjetas horizontalmente */
+}
+
+.content-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: calc(33.33% - 50px); /* Tres tarjetas por fila */
+  padding: 20px;
+  text-align: center;
+}
+
+.content-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.content-card h5 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.content-card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .content-card {
+      width: calc(50% - 20px); /* Dos tarjetas por fila */
+  }
+}
+
+@media (max-width: 576px) {
+  .content-card {
+      width: 100%; /* Una tarjeta por fila */
+  }
+}
+
+

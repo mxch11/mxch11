@@ -1,12 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mujeres Virtuosas</title>
-    <!-- Stylish Portfolio CSS -->
+    <title>  Mujeres Virtuosas - {% block title %} {% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
     <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -14,15 +15,92 @@
     <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
 
 </head>
+
 <body>
     {% include 'navbar.html' %}
-    {% block content %}
-    {% endblock %}
+
+    <!-- Profile Section -->
+    <div class="profile-header">
+        <!-- Back Button -->
+        <a href="/" class="back-button">
+            <i class="bi bi-arrow-left"></i> Regresar
+        </a>
+
+        <!-- Profile Info  aqui modificar a futuro-->
+        <h4 class="pestañas"> {% block catServi %}categoria{% endblock catServi %}</h4>
+    </div>
+
+    <!-- Tab Menu -->
+    <div class="tab-menu mt-4">
+        <a href="#profesionales" class="active">Profesionales</a>
+        <a href="#servicios">Servicios</a>
+    </div>
+    <!-- Contenedor Horizontal -->
+     
+    <div class="sections-container">
+
+
+        <!-- Sección Profesionales // hacer for a futuro-->
+        <section id="profesionales">
+            <h2>Profesionales</h2>
+            <p>Encuentra a los mejores profesionales especializados en el cuidado y belleza.</p>
+            <div class="content-container">
+                {% for estilista in estilistas %}
+                    <div class="content-card" style="width: calc(33.33% - 100px);">
+                        {% if estilista.foto %}
+                        <img src="{{ estilista.foto.url }}" alt="{{ estilista.nombre }}">
+                        {% else %}
+                        <img src="{% static 'images/placeholder.png' %}" class="card-img-top estilista-img" alt="Imagen por defecto">
+                        {% endif %}
+                        <h5>{{ estilista.nombre }}</h5>
+                        <p><strong>Especialidad:</strong> {{ estilista.especialidad }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Sección Servicios -->
+        <section id="servicios">
+            {% block agendamiento %} link agendamiento{% endblock agendamiento %}
+        </section>
+    </div>
+
+    {% include "footer.html" %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const links = document.querySelectorAll('.tab-menu a');
+            const sectionsContainer = document.querySelector('.sections-container');
+    
+            links.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault(); // Evita el comportamiento por defecto del enlace
+                    const targetId = this.getAttribute('href').slice(1); // Obtén el ID del destino
+                    const targetSection = document.getElementById(targetId);
+    
+                    if (targetSection) {
+                        // Calcula el desplazamiento horizontal
+                        const offset = targetSection.offsetLeft;
+                        sectionsContainer.scrollTo({
+                            left: offset,
+                            behavior: 'smooth' // Desplazamiento suave
+                        });
+    
+                        // Actualiza la clase activa
+                        links.forEach(link => link.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>
