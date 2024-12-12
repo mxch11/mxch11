@@ -64,9 +64,6 @@ def p_inicio(request):
     servicios = Servicio.objects.filter(categoria = 'pestañas')
     return render(request, 'servicios/pestañas/inicio.html', {'estilistas': estilistas, 'servicios': servicios})
 
-def p_agendamiento(request):
-    pass
-
 @login_required
 def d_inicio(request):
 
@@ -109,7 +106,7 @@ def reservar_hora(request):
 
 
         try:
-            servicio = Servicio.objects.get(id=servicio_id)
+            servicio = Servicio.objects.get(id=servicio_id[0])
             profesional = Estilista.objects.get(id=profesional_id)
         except (Servicio.DoesNotExist, Estilista.DoesNotExist) as e:
             return JsonResponse({'error': 'Servicio o profesional no encontrado'}, status=404)
@@ -142,14 +139,23 @@ def reservar_hora(request):
 @login_required
 def mis_reservas(request):
     # Obtener las reservas del usuario autenticado
-    reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha', '-hora')
+    if request.user.is_staff:  # Si el usuario tiene acceso al panel de administración
+        reservas = Reserva.objects.all().order_by('-fecha', '-hora')
+    else:
+        reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha', '-hora')
+    
+
     return render(request, 'servicios/reservas/mis_reservas.html', {'reservas': reservas})
 
 @login_required
 def cancelar_reserva(request, reserva_id):
     if request.method == 'POST':
         # Obtener la reserva y validar que pertenece al usuario
-        reserva = get_object_or_404(Reserva, id=reserva_id, usuario=request.user)
+        if request.user.is_staff:  # Si el usuario tiene acceso al panel de administración
+            reserva = get_object_or_404(Reserva, id=reserva_id)
+
+        else:
+            reserva = get_object_or_404(Reserva, id=reserva_id, usuario=request.user)
 
         # Validar si la reserva es cancelable
         if not reserva.es_cancelable():

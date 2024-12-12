@@ -5,16 +5,6 @@
   font-style: normal;
 }
 
-.carrito-container {
-  margin-left: auto; /* Ajusta este valor para cambiar la separación */
-}
-body {
-  background-color: #f8f9fa;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Evita el scroll horizontal no deseado */
-}
-
 .profile-header {
   position: relative;
   height: 50vh; /* Altura relativa al viewport */
@@ -23,8 +13,8 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   color: #000;
   padding-bottom: 20px;
@@ -43,12 +33,19 @@ body {
   font-size: clamp(24px, 5vw, 72px); /* Ajusta entre 24px y 72px según el ancho del viewport */
   color: #000;
   text-decoration: none;
+  margin: 20vw;
 }
 
 .tab-menu {
   display: flex;
   justify-content: space-around;
-  margin-top: 20px;
+  margin: 20px 0;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 10;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .tab-menu a {
@@ -57,6 +54,7 @@ body {
   color: #000;
   font-weight: bold;
   border-bottom: 3px solid transparent;
+  transition: border-color 0.3s;
 }
 
 .tab-menu a.active {
@@ -71,10 +69,10 @@ body {
   scroll-snap-type: x mandatory; /* Snap horizontal obligatorio */
 }
 
-section {
+.sections-container section {
   flex: 0 0 100%; /* Cada sección ocupa el 100% del ancho del contenedor */
   min-height: 100vh;
-  scroll-snap-align: start; /* Alinea las secciones al inicio */
+  /* scroll-snap-align: start; Alinea las secciones al inicio */
   padding: 20px;
 }
 
@@ -85,7 +83,13 @@ section {
 #servicios {
   background-color: #fceae4;
 }
+#servicios .sections-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
 
+}
 .content-container {
   display: flex;
   flex-wrap: wrap; /* Permite que las tarjetas se ajusten */
@@ -98,10 +102,12 @@ section {
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: calc(33.33% - 50px); /* Tres tarjetas por fila */
+  width: calc(33.33% - 20px); /* Tres tarjetas por fila */
   padding: 20px;
   text-align: center;
+  box-sizing: border-box;
 }
+
 
 .content-card img {
   width: 100%;
@@ -115,6 +121,7 @@ section {
   margin-bottom: 10px;
   color: #000;
 }
+
 
 .content-card p {
   font-size: 0.9rem;

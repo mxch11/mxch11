@@ -17,31 +17,6 @@
         font-family: Arial, sans-serif;
     }
 
-    .tab-menu {
-        display: flex;
-        justify-content: space-around;
-        margin: 20px 0;
-        position: sticky;
-        top: 0;
-        background-color: #fff;
-        z-index: 10;
-        padding: 10px 0;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .tab-menu a {
-        padding: 10px 20px;
-        text-decoration: none;
-        color: #000;
-        font-weight: bold;
-        border-bottom: 3px solid transparent;
-        transition: border-color 0.3s;
-    }
-
-    .tab-menu a.active {
-        border-color: #6c757d;
-    }
-
     .sections-container {
         display: flex;
         flex-wrap: nowrap;
@@ -150,38 +125,24 @@
     }
 </style>
 
-<div class="tab-menu d-none">
-    <a href="#seguridad" class="active">Seguridad</a>
-    <a href="#efecto">Efecto</a>
-    <a href="#profesional">Profesional</a>
-    <a href="#calendario">Calendario</a>
-    <a href="#confirmar">Confirmar</a>
-</div>
-
 <div class="sections-container">
-    <!-- Pestaña 1: Seguridad -->
-    {% comment %} <section id="seguridad">
-        <div class="service-card">
-            <p>Si posee un lifting de pestañas con antigüedad de 1 mes o menos, no podrá realizarse el servicio de extensiones por su seguridad.</p>
-            <label>Toma de conocimiento</label>
-            <input type="checkbox" id="checkbox-seguridad" /> <br>
-            <button id="btn-continuar-seguridad" class="btn btn-warning mt-3" disabled>Continuar</button>
-        </div>
-    </section> {% endcomment %}
 
     <!-- Pestaña 2: Efecto -->
     <section id="efecto">
         <div class="service-card">
-            <label for="efect">Efecto a realizar</label>
-            <select id="efect" class="form-control mt-2" required>
-                <option value="" disabled selected>----</option>
+            <label for="efect">Zona a trabajar</label>
+            <div class="form-group mt-2">
                 {% for servicio in servicios %}
-                <option value="{{ servicio.id }}">{{ servicio.nombre }} - ${{ servicio.precio }}</option>
+                <div class="form-check">
+                    <input type="checkbox" id="servicio-{{ servicio.id }}" name="servicios" value="{{ servicio.id }}" class="form-check-input">
+                    <label for="servicio-{{ servicio.id }}" class="form-check-label">
+                        {{ servicio.nombre }} - ${{ servicio.precio }}
+                    </label>
+                </div>
                 {% endfor %}
-            </select>
+            </div>
             <div class="mt-3">
-                
-                <button id="btn-continuar-efecto" class="btn btn-warning">Continuar</button>
+                <button id="btn-continuar-efecto" class="btn btn-warning" disabled>Continuar</button>
             </div>
         </div>
     </section>
@@ -237,16 +198,16 @@
             <p><strong>Servicio:</strong> <span id="confirmar-servicio">-</span></p>
             <p><strong>Profesional:</strong> <span id="confirmar-profesional">-</span></p>
             <p><strong>Fecha:</strong> <span id="confirmar-fecha">-</span></p>
+            
             <form id="form-reservar-hora" method="POST" action="{% url 'reservar_hora' %}">
                 {% csrf_token %}
                 <input type="hidden" name="servicio_id" id="input-servicio-id"required>
                 <input type="hidden" name="profesional_id" id="input-profesional-id"required>
                 <input type="hidden" name="fecha" id="input-fecha"required>
-                <button id="btn-retroceder-confirmar" class="btn btn-secondary">Retroceder</button>
-          
                 
                 <button type="submit" class="btn btn-success mt-3">Confirmar Agendamiento</button>
             </form>
+            <button id="btn-retroceder-confirmar" class="btn btn-secondary mt-3">Retroceder</button>
         </div>
     </section>
 </div>
@@ -256,8 +217,24 @@
         link.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
+            const tabMenu = document.querySelector('.tab-menu');
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
+                if (this.getAttribute('href') === '#servicios') {
+                    // Centrar verticalmente el elemento
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center', // Centra verticalmente
+                    });
+                } else if (this.getAttribute('href') === '#profesionales') {
+                    // Alinear el elemento en la parte superior
+                    const offset = tabMenu.offsetHeight || 0; // Altura del menú fijo
+                    const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth',
+                    });
+                }
             }
         });
     });
@@ -303,6 +280,9 @@
 
         // Función para generar las fechas del calendario
         function generateCalendar(date) {
+            const today = new Date(); // Fecha actual
+            today.setHours(0, 0, 0, 0); // Eliminar horas para comparar solo días
+            
             const year = date.getFullYear();
             const month = date.getMonth();
 
@@ -323,22 +303,23 @@
             // Agregar días del mes anterior como "disabled"
             const prevDays = new Date(year, month, 0).getDate();
             for (let i = firstDay - 1; i >= 0; i--) {
-                const dayDiv = document.createElement('div');
-                dayDiv.textContent = prevDays - i;
-                dayDiv.classList.add('disabled');
-                calendarDates.appendChild(dayDiv);
+                calendarDates.appendChild(crearDia(prevDays - i, true));
             }
 
             // Agregar días del mes actual
             for (let i = 1; i <= daysInMonth; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.textContent = i;
-                dayDiv.classList.add('selectable');
-                dayDiv.addEventListener('click', () => {
-                    document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
-                    dayDiv.classList.add('selected');
-                });
-                calendarDates.appendChild(dayDiv);
+                const currentDay = new Date(year, month, i);
+                const isDisabled = currentDay < today; // Deshabilitar si es anterior a hoy
+                const dia = crearDia(i, isDisabled);
+        
+                if (!isDisabled) {
+                    dia.addEventListener('click', () => {
+                        document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+                        dia.classList.add('selected');
+                        fechaSeleccionada = `${i} ${monthNames[month]} ${year}`;
+                    });
+                }
+                calendarDates.appendChild(dia);
             }
 
             // Agregar días del mes siguiente como "disabled"
@@ -351,6 +332,12 @@
                     dayDiv.classList.add('disabled');
                     calendarDates.appendChild(dayDiv);
                 }
+            }
+            function crearDia(numero, disabled) {
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = numero;
+                dayDiv.classList.add(disabled ? 'disabled' : 'selectable');
+                return dayDiv;
             }
         }
 
@@ -368,15 +355,14 @@
         // Generar el calendario inicial
         generateCalendar(currentDate);
     });
-
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Variables para almacenar los datos seleccionados
-        let servicioSeleccionado = '';
+        let serviciosSeleccionados = [];
         let profesionalSeleccionado = '';
         let fechaSeleccionada = '';
-        let servicioId = '';
+        let serviciosId = [];
         let profesionalId = '';
     
         // Referencias a los campos de confirmación y formulario
@@ -388,16 +374,26 @@
         const inputProfesionalId = document.getElementById('input-profesional-id');
         const inputFecha = document.getElementById('input-fecha');
     
-        // Manejar selección de servicio
-        const servicioSelect = document.getElementById('efect');
+        // Manejar selección de servicios (checkboxes)
+        const checkboxes = document.querySelectorAll('input[name="servicios"]');
         const continuarEfecto = document.getElementById('btn-continuar-efecto');
-        servicioSelect.addEventListener('change', () => {
-            servicioId = servicioSelect.value;
-            servicioSeleccionado = servicioSelect.options[servicioSelect.selectedIndex].text;
-            console.log(`Servicio seleccionado: ${servicioSeleccionado} (ID: ${servicioId})`);
     
-            // Habilitar el botón de continuar si hay selección
-            continuarEfecto.disabled = !servicioId;
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                // Actualizar las selecciones
+                serviciosSeleccionados = Array.from(checkboxes)
+                    .filter(cb => cb.checked) // Filtrar checkboxes marcados
+                    .map(cb => cb.nextElementSibling.textContent.trim()); // Obtener nombres de los servicios
+    
+                serviciosId = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value); // Obtener IDs de los servicios seleccionados
+    
+                // Habilitar el botón de continuar si hay selección
+                continuarEfecto.disabled = serviciosSeleccionados.length === 0;
+    
+                console.log(`Servicios seleccionados: ${serviciosSeleccionados.join(', ')}`);
+            });
         });
     
         // Manejar selección de profesional
@@ -430,12 +426,12 @@
         // Al llegar a la pestaña "Confirmar", actualizar los datos y formulario
         continuarCalendario.addEventListener('click', () => {
             // Actualizar los valores de los campos ocultos del formulario
-            inputServicioId.value = servicioId;
+            inputServicioId.value = serviciosId.join(','); // Pasar los IDs como una cadena separada por comas
             inputProfesionalId.value = profesionalId;
             inputFecha.value = fechaSeleccionada;
     
             // Mostrar los datos en la sección de Confirmación
-            confirmarServicio.textContent = servicioSeleccionado || 'No seleccionado';
+            confirmarServicio.textContent = serviciosSeleccionados.length > 0 ? serviciosSeleccionados.join(', ') : 'No seleccionado';
             confirmarProfesional.textContent = profesionalSeleccionado || 'No seleccionado';
             confirmarFecha.textContent = fechaSeleccionada || 'No seleccionada';
     

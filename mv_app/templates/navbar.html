@@ -2,19 +2,13 @@
     <div class="container-fluid d-flex align-items-center">
         <!-- Logo o Título del Navbar -->
         <a class="navbar-brand" href="/">Mujeres Virtuosas</a>
-        <!-- Botón Responsive y Carrito en Pantallas Pequeñas -->
+        <!-- Botón Responsive en Pantallas Pequeñas -->
         <div class="d-flex d-lg-none align-items-center">
             <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a href="#" class="btn btn-outline-dark position-relative">
-                <i class="bi bi-cart"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    3
-                </span>
-            </a>
         </div>
         <!-- Opciones del Navbar -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -53,18 +47,6 @@
                     </li>
                 </ul>
             </div>
-
-            <!-- Carrito de Compras Visible Solo en Pantallas Grandes -->
-            {% if user.is_authenticated %}
-            <div class="carrito-container d-none d-lg-flex">
-                <a href="#" class="btn btn-outline-dark position-relative">
-                    <i class="bi bi-cart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
-                    </span>
-                </a>
-            </div>
-            {% endif %}
         </div>
     </div>
 </nav>

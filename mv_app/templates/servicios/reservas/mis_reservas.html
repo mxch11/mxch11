@@ -32,58 +32,70 @@
         </a>
 
         <!-- Profile Info  aqui modificar a futuro-->
-        <h4 class="pestañas"> mis reservas</h4>
+        <h4 class="pestañas"> Mis Reservas</h4>
     </div>
     <div class="container mt-5">
+        {% if user.is_staff %}
+        <h1 class="mb-4">Reservas</h1>
+        {% else %}
         <h1 class="mb-4">Mis Reservas - {{ user.first_name|default:user.username }}</h1>
+        {% endif %}
+        
         <!-- Mostrar mensajes de alerta -->
         {% if messages %}
-        <div class="mb-3">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="mb-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
         {% endif %}
 
         {% if reservas %}
-        <table class="table table-striped table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Servicio</th>
-                    <th>Profesional</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reserva in reservas %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ reserva.servicio.nombre }}</td>
-                    <td>{{ reserva.estilista.nombre }}</td>
-                    <td>{{ reserva.fecha|date:"d/m/Y" }}</td>
-                    <td>{{ reserva.hora|time:"H:i" }}</td>
-                    <td>
-                        {% if reserva.es_cancelable %}
-                        <form method="POST" action="{% url 'cancelar_reserva' reserva.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Cancelar</button>
-                        </form>
-                        {% else %}
-                        <span class="text-muted">No cancelable</span>
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        {% if user.is_staff %}
+                            <th>Nombre</th>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        
+                        <th>Servicio</th>
+                        <th>Profesional</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        {% if user.is_staff %}
+                            <td>{{reserva.usuario.first_name|default:user.username}}</td>
+                        {% endif %}
+                        <td>{{ reserva.servicio.nombre }}</td>
+                        <td>{{ reserva.estilista.nombre }}</td>
+                        <td>{{ reserva.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ reserva.hora|time:"H:i" }}</td>
+                        <td>
+                            {% if reserva.es_cancelable %}
+                            <form method="POST" action="{% url 'cancelar_reserva' reserva.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Cancelar</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">No cancelable</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-        <p class="alert alert-info">No tienes reservas activas.</p>
+            <p class="alert alert-info">No tienes reservas activas.</p>
         {% endif %}
         <a href="/" class="btn btn-primary mt-3">Volver al inicio</a>
     </div>

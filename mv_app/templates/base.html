@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+    
 
 </head>
 
@@ -50,7 +51,7 @@
             <p>Encuentra a los mejores profesionales especializados en el cuidado y belleza.</p>
             <div class="content-container">
                 {% for estilista in estilistas %}
-                    <div class="content-card" style="width: calc(33.33% - 100px);">
+                    <div class="content-card">
                         {% if estilista.foto %}
                         <img src="{{ estilista.foto.url }}" alt="{{ estilista.nombre }}">
                         {% else %}
@@ -70,6 +71,7 @@
     </div>
 
     {% include "footer.html" %}
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -83,13 +85,23 @@
                     const targetSection = document.getElementById(targetId);
     
                     if (targetSection) {
-                        // Calcula el desplazamiento horizontal
-                        const offset = targetSection.offsetLeft;
+                        // Calcular el desplazamiento horizontal
+                        const containerWidth = sectionsContainer.offsetWidth; // Ancho del contenedor
+                        const sectionWidth = targetSection.offsetWidth; // Ancho de la sección
+                        const offsetLeft = targetSection.offsetLeft - (containerWidth / 2) + (sectionWidth / 2);
+        
+                        // Calcular el desplazamiento vertical
+                        const containerHeight = sectionsContainer.offsetHeight; // Altura del contenedor
+                        const sectionHeight = targetSection.offsetHeight; // Altura de la sección
+                        const offsetTop = targetSection.offsetTop - (containerHeight / 2) + (sectionHeight / 2);
+        
+                        // Realiza el desplazamiento en ambos ejes
                         sectionsContainer.scrollTo({
-                            left: offset,
+                            left: offsetLeft,
+                            top: offsetTop,
                             behavior: 'smooth' // Desplazamiento suave
                         });
-    
+        
                         // Actualiza la clase activa
                         links.forEach(link => link.classList.remove('active'));
                         this.classList.add('active');
